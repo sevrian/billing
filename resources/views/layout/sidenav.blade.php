@@ -3,7 +3,7 @@
         <ul class="nav navbar-nav flex-row">
             <li class="nav-item mr-auto"><a class="navbar-brand" href="#">
                     <div class="brand-logo"></div>
-                    <h2 class="brand-text mb-0">Biling</h2>
+                    <h2 class="brand-text mb-0">Biliing</h2>
                 </a></li>
             <li class="nav-item nav-toggle"><a class="nav-link modern-nav-toggle pr-0" data-toggle="collapse"><i
                         class="icon-x d-block d-xl-none font-medium-4 primary toggle-icon feather icon-disc"></i><i
@@ -47,7 +47,7 @@
                     </li>
                     <li class="{{ Request::is('reports')?'active':''}}"><a
                         href="{{ url ('reports')}}"><i></i><span class="menu-item"
-                            data-i18n="Fixed navbar">Transaction</span></a>
+                            data-i18n="Fixed navbar">Report</span></a>
                 </li>
                 </ul>
             </li>
