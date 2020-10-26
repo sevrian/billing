@@ -14,7 +14,7 @@
                             </li>
                             <li class="breadcrumb-item"><a href="#">Role</a>
                             </li>
-                            <li class="breadcrumb-item active">Daftar Role
+                            <li class="breadcrumb-item active">Role
                             </li>
                         </ol>
                     </div>
@@ -22,14 +22,14 @@
             </div>
         </div>
         <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-            <button type="button" data-toggle="modal" data-target="#create"
-                class="btn btn-primary mr-1 mb-1 waves-effect waves-light">Add Role</button>
+            <a onclick="addForm()" type="button" data-toggle="modal" 
+                class="btn btn-primary mr-1 mb-1 waves-effect waves-light ">Add Role</a>
         </div>
     </div>
 
     <div class="content-body">
 
-        <section id="css-classes" class="card">
+        <section id="css-classes" class="card"> 
             <div class="card-header">
                 <h4 class="card-title">Daftar Role</h4>
             </div>
@@ -37,33 +37,17 @@
                 <div class="card-body">
                     <div class="card-text">
                         <div class="table-responsive">
-                            <table class="table table-sm table-borderless table-striped">
+                            <table class="table table-sm table-borderless table-striped table-role" >
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Name Role</th>
+                                        <th>#</th>
+                                        <th scope="col">Nama Role</th>
                                         <th scope="col">Keterangan</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($data_role as $result)
-                                    <tr>
-                                        <td>#</td>
-                                        <td>{{$result->nama}}</td>
-                                        <td>{{$result->keterangan}}</td>
-                                        <td>
-                                            {{-- <a href="role/{{$result->id}}/edit"
-                                                class="btn btn-sm btn-warning mr-1 mb-1 waves-effect waves-light">
-                                                edit</a>
-                                                <a href="role/{{$result->id}}/edit"
-                                                class="btn btn-sm btn-primary mr-1 mb-1 waves-effect waves-light">
-                                                edit</a> --}}
-                                                <a href="role/{id}/edit" type="button" data-toggle="modal" data-target="#edit"
-                                                class="btn btn-primary mr-1 mb-1 waves-effect waves-light">Add Role</a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
+                                  
 
                                 </tbody>
                             </table>
@@ -72,67 +56,8 @@
                 </div>
             </div>
             {{-- Modal create --}}
-            <div class="modal fade text-left" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel33">Inline Login Form </h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="#" method="POST">
-                            @csrf
-                            <div class="modal-body">
-                                <label>Name Role </label>
-                                <div class="form-group">
-                                    <input type="text" placeholder="Name Role" class="form-control" name="nama">
-                                </div>
-                                <label>Keterangan </label>
-                                <div class="form-group">
-                                    <input type="text" placeholder="Keterangan" class="form-control" name="keterangan">
-                                </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            {{-- Modal Edit --}}
-            <div class="modal fade text-left" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel33">Inline Login Form </h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="{{ route('role.update')}}" method="POST">
-                            @csrf
-                            <div class="modal-body">
-                                <label>Name Role </label>
-                                <div class="form-group">
-                                    <input type="text" placeholder="Name Role" class="form-control" name="nama">
-                                </div>
-                                <label>Keterangan </label>
-                                <div class="form-group">
-                                    <input type="text" placeholder="Keterangan" class="form-control" name="keterangan">
-                                </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Login</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+           @include('admin.role.form')
+            
         </section>
         <!--/ CSS Classes -->
 
@@ -142,5 +67,108 @@
 @endsection
 
 @push('scripts')
+    <script type="text/javascript">
+  
+        var table = $('.table-role').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route ('api.role') }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                },
+                {
+                    data: 'nama',
+                    name: 'nama'
+                },
+                {
+                    data: 'keterangan',
+                    name: 'keterangan'
+                },
 
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: true,
+                    searchable: false
+                }
+            ]
+        });
+
+        function addForm() {
+            save_method = "add";
+            $('input[name=_method]').val('POST');
+            $('#modalForm').modal('show');
+            $('.modal-title').text('Add Role');
+            $('#modalForm form')[0].reset();
+        }
+
+        function editForm(id) {
+           
+            save_method = "edit";
+            $('input[name=_method]').val('PATCH');
+            $('#modalForm form')[0].reset();
+            $.ajax({
+                url: "{{ url ('role')}}" + '/' + id + "/edit",
+                type: "GET",
+                dataType: "JSON",
+              
+                success: function (data) {
+                    $('#modalForm').modal('show');
+                    $('.modal-title').text('Edit Role');
+                    $('#id').val(data.id);
+                    $('#nama').val(data.nama);
+                    $('#keterangan').val(data.keterangan);
+                },
+                error: function () {
+                    alert("waduuuh! Update Eror buos");
+                }
+            });
+
+        }
+
+        $(function () {
+         
+            $('#modalForm form').validator().on('submit', function (e) {
+                if (!e.isDefaultPrevented()) {
+                    var id = $('#id').val();
+                    if (save_method == 'add') url = "{{ url ('role')}}";
+                    else url = "{{ url ('role') . '/' }}" + id;
+
+                    $.ajax({
+                        type: "PATH",
+                        url: url,
+                        data: $('#modalForm from').serialize(),
+                        success: function ($data) {
+                            $('#modalForm').modal('hide');
+                            table.ajax.reload();
+                         },
+                        error: function () {
+                            alert("waduuuh!  Eror buos");
+                        }
+                    });
+                    return false;
+                }
+            });
+        });
+
+        function deleteData(id){
+           var popup = confirm("yakin?");
+           var csrf_token = $('meta[name="csrf-token"]').attr('content');
+           if(popup == true){
+              $.ajax({
+                 type: "POST",
+                 url: "{{ url ('role')}}"+ '/'+ id ,
+                 data: {'_method':'DELETE','_token': csrf_token},
+                 success : function (data) {
+                    table.ajax.reload();
+                    console.log(data);
+                 },
+                 error: function(){
+                    alert("ops");
+                 }
+              })
+           } 
+        }
+    </script>
 @endpush

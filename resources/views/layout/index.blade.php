@@ -43,6 +43,8 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="stylesheet" type="text/css" href="{{ url ('app-assets/css/components.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ url ('app-assets/css/themes/dark-layout.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ url ('app-assets/css/themes/semi-dark-layout.css')}}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ url ('app-assets/css/plugins/forms/validation/form-validation.css')}}">
 
     <!-- BEGIN: Page CSS-->
     <link rel="stylesheet" type="text/css" href="{{ url ('app-assets/css/core/menu/menu-types/vertical-menu.css')}}">
@@ -465,10 +467,11 @@ License: You must have a valid license purchased only from themeforest(the above
     <script src="{{ url ('app-assets/vendors/js/vendors.min.js')}}"></script>
     <script src="{{ url ('app-assets/vendors/js/forms/select/select2.full.min.js')}}"></script>
     <script src="{{ url ('app-assets/vendors/js/extensions/sweetalert2.all.min.js')}}"></script>
+    <script src="{{ url ('app-assets/vendors/js/forms/validation/jqBootstrapValidation.js')}}"></script>
     <!-- BEGIN Vendor JS-->
 
     <!-- BEGIN: Page Vendor JS-->
- 
+
     <script src="{{url ('app-assets/vendors/js/ui/prism.min.js')}}"></script>
     <script src="{{url ('app-assets/vendors/js/tables/datatable/pdfmake.min.js')}}"></script>
     <script src="{{url ('app-assets/vendors/js/tables/datatable/vfs_fonts.js')}}"></script>
@@ -479,14 +482,18 @@ License: You must have a valid license purchased only from themeforest(the above
     <script src="{{url ('app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js')}}"></script>
     <script src="{{url ('app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js')}}"></script>
     <!-- END: Page Vendor JS-->
-
     <!-- BEGIN: Theme JS-->
     <script src="{{ url ('app-assets/js/core/app-menu.js')}}"></script>
     <script src="{{ url ('app-assets/js/core/app.js')}}"></script>
     <script src="{{ url ('app-assets/js/scripts/extensions/sweet-alerts.js')}}"></script>
     <script src="{{ url ('app-assets/js/scripts/datatables/datatable.js')}}"></script>
+    <script src="{{url ('app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
+    
     <script src="{{url ('app-assets/js/scripts/modal/components-modal.js')}}"></script>
+    
     <!-- END: Theme JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
+
     @stack('scripts')
     <!-- BEGIN: Page JS-->
     @stack('js')

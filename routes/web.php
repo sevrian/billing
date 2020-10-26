@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,4 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('layout.index');
 });
+Route::get('role/api', 'RoleController@apirole')->name('api.role');
 Route::resource('role', 'RoleController');
+
+Route::resource('produk', 'Admin\ProdukController');

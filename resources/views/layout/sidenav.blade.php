@@ -29,7 +29,7 @@
                     </li>
                 </ul>
             </li>
-            <li class=" {{ Request::is('products')?'active':''}}"><a href="{{ url ('products')}}""><i class=" feather
+            <li class=" {{ Request::is('produk')?'active':''}}"><a href="{{ url ('produk')}}""><i class=" feather
                     icon-credit-card"></i><span class="menu-title" data-i18n="Starter kit">Products</span></a>
 
             </li>
