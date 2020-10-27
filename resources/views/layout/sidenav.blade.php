@@ -21,8 +21,8 @@
             <li class=" nav-item"><a href="#"><i class="feather icon-box"></i><span class="menu-title"
                         data-i18n="Starter kit">Users</span></a>
                 <ul class="menu-content">
-                    <li class="{{ Request::is('guru')?'active':''}}"><a href="{{ url ('guru')}}"><i></i><span
-                                class="menu-item" data-i18n="2 columns">Members</span></a>
+                    <li class="{{ Request::is('pelanggan')?'active':''}}"><a href="{{ url ('pelanggan')}}"><i></i><span
+                                class="menu-item" data-i18n="2 columns">Customers</span></a>
                     </li>
                     <li class="{{ Request::is('siswa')?'active':''}}"><a href="{{ url ('siswa')}}"><i></i><span
                                 class="menu-item" data-i18n="Fixed navbar">Admin</span></a>

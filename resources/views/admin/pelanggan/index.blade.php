@@ -7,14 +7,14 @@
         <div class="content-header-left col-md-9 col-12 mb-2">
             <div class="row breadcrumbs-top">
                 <div class="col-12">
-                    <h2 class="content-header-title float-left mb-0">Produts</h2>
+                    <h2 class="content-header-title float-left mb-0">Customes</h2>
                     <div class="breadcrumb-wrapper col-12">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="sk-layout-2-columns.html">Home</a>
                             </li>
-                            <li class="breadcrumb-item"><a href="#">Product</a>
+                            <li class="breadcrumb-item"><a href="#">Customes</a>
                             </li>
-                            <li class="breadcrumb-item active">List Puducts
+                            <li class="breadcrumb-item active">List Customes
                             </li>
                         </ol>
                     </div>
@@ -22,8 +22,8 @@
             </div>
         </div>
         <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-            <a href="javascript:void(0)" type="button" data-toggle="addProduk" id="tombol-tambah"
-                class="btn btn-primary mr-1 mb-1 waves-effect waves-light ">Add Products</a>
+            <a href="javascript:void(0)" type="button" data-toggle="addPelanggan" id="tombol-tambah"
+                class="btn btn-primary mr-1 mb-1 waves-effect waves-light ">Add Customes</a>
         </div>
     </div>
 
@@ -31,18 +31,21 @@
 
         <section id="css-classes" class="card">
             <div class="card-header">
-                <h4 class="card-title">List Produts</h4>
+                <h4 class="card-title">List Customes</h4>
             </div>
             <div class="card-content">
                 <div class="card-body">
                     <div class="card-text">
                         <div class="table-responsive">
-                            <table class="table table-sm table-borderless table-striped " id="table_produk">
+                            <table class="table table-sm table-borderless table-striped " id="table_pelanggan">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th scope="col">Name Products</th>
-                                        <th scope="col">Price</th>
+                                       
+                                        <th scope="col">Pelanggan ID</th>
+                                        <th scope="col">Customer Name</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Phone</th>
+                                        <th scope="col">Email</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
@@ -56,7 +59,7 @@
                 </div>
             </div>
             {{-- Modal create --}}
-            @include('admin.produk.form')
+            @include('admin.pelanggan.form')
             <div class="modal fade" tabindex="-1" role="dialog" id="konfirmasi-modal" data-backdrop="false">
                <div class="modal-dialog" role="document">
                    <div class="modal-content">
@@ -111,7 +114,7 @@
             var from_date = $('#from_date').val();
             var to_date = $('#to_date').val();
             if (from_date != '' && to_date != '') {
-                $('#table_produk').DataTable().destroy();
+                $('#table_pelanggan').DataTable().destroy();
                 load_data(from_date, to_date);
             } else {
                 alert('Both Date is required');
@@ -121,7 +124,7 @@
         $('#refresh').click(function () {
             $('#from_date').val('');
             $('#to_date').val('');
-            $('#table_produk').DataTable().destroy();
+            $('#table_pelanggan').DataTable().destroy();
             load_data();
         });
 
@@ -129,30 +132,39 @@
         //script untuk memanggil data json dari server dan menampilkannya berupa datatable
         //load data menggunakan parameter tanggal dari dan tanggal hingga
         function load_data(from_date = '', to_date = '') {
-            $('#table_produk').DataTable({
+            $('#table_pelanggan').DataTable({
                 //  processing: true,
                 serverSide: true, //aktifkan server-side 
                 ajax: {
-                    url: "{{ route('produk.index') }}",
+                    url: "{{ route('pelanggan.index') }}",
                     type: 'GET',
                     data: {
                         from_date: from_date,
                         to_date: to_date
                     } //jangan lupa kirim parameter tanggal 
                 },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex'
+                columns: [
+                    {
+                        data: 'user_id',
+                        name: 'user_id'
                     },
                     {
-                        data: 'nama_produk',
-                        name: 'nama_produk'
-                    },
-                    {
-                        data: 'harga',
-                        name: 'harga'
+                        data: 'nama',
+                        name: 'nama'
                     },
 
+                    {
+                        data: 'alamat',
+                        name: 'alamat'
+                    },
+                    {
+                        data: 'telepon',
+                        name: 'telepon'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
                     {
                         data: 'action',
                         name: 'action'
@@ -189,14 +201,14 @@
                 $.ajax({
                     data: $('#form-tambah-edit')
                         .serialize(), //function yang dipakai agar value pada form-control seperti input, textarea, select dll dapat digunakan pada URL query string ketika melakukan ajax request
-                    url: "{{ route('produk.store') }}", //url simpan data
+                    url: "{{ route('pelanggan.store') }}", //url simpan data
                     type: "POST", //karena simpan kita pakai method POST
                     dataType: 'json', //data tipe kita kirim berupa JSON
                     success: function (data) { //jika berhasil 
                         $('#form-tambah-edit').trigger("reset"); //form reset
                         $('#tambah-edit-modal').modal('hide'); //modal hide
                         $('#tombol-simpan').html('Simpan'); //tombol simpan
-                        var oTable = $('#table_produk')
+                        var oTable = $('#table_pelanggan')
                             .dataTable(); //inialisasi datatable
                         oTable.fnDraw(false); //reset datatable
                         iziToast.success({ //tampilkan iziToast dengan notif data berhasil disimpan pada posisi kanan bawah
@@ -219,15 +231,19 @@
     //ketika class edit-post yang ada pada tag body di klik maka
     $('body').on('click', '.edit-post', function () {
         var data_id = $(this).data('id');
-        $.get('produk/' + data_id + '/edit', function (data) {
+        $.get('pelanggan/' + data_id + '/edit', function (data) {
             $('#modal-judul').html("Edit Post");
             $('#tombol-simpan').val("edit-post");
             $('#tambah-edit-modal').modal('show');
 
             //set value masing-masing id berdasarkan data yg diperoleh dari ajax get request diatas               
             $('#id').val(data.id);
-            $('#nama_produk').val(data.nama_produk);
-            $('#harga').val(data.harga);
+            $('#nama').val(data.nama);
+            $('#user_id').val(data.user_id);
+            $('#alamat').val(data.alamat);
+            $('#telepon').val(data.telepon);
+            $('#email').val(data.email);
+            
             
         })
     });
@@ -242,7 +258,7 @@
     $('#tombol-hapus').click(function () {
         $.ajax({
 
-            url: "produk/" + dataId, //eksekusi ajax ke url ini
+            url: "pelanggan/" + dataId, //eksekusi ajax ke url ini
             type: 'delete',
             beforeSend: function () {
                 $('#tombol-hapus').text('Hapus Data'); //set text untuk tombol hapus
@@ -250,7 +266,7 @@
             success: function (data) { //jika sukses
                 setTimeout(function () {
                     $('#konfirmasi-modal').modal('hide'); //sembunyikan konfirmasi modal
-                    var oTable = $('#table_produk').dataTable();
+                    var oTable = $('#table_pelanggan').dataTable();
                     oTable.fnDraw(false); //reset datatable
                 });
                 iziToast.warning({ //tampilkan izitoast warning

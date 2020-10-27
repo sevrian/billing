@@ -22,3 +22,4 @@ Route::get('role/api', 'RoleController@apirole')->name('api.role');
 Route::resource('role', 'RoleController');
 
 Route::resource('produk', 'Admin\ProdukController');
+Route::resource('pelanggan', 'Admin\PelangganController');

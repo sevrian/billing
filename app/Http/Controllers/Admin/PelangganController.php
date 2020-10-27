@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Model\Pelanggan;
 use Illuminate\Http\Request;
-use App\Model\Produk;
 
-
-
-
-class ProdukController extends Controller
+class PelangganController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,11 +15,12 @@ class ProdukController extends Controller
      */
     public function index(Request $request)
     {
-        $list_produk = Produk::all();
+
+        $list_pelanggan = Pelanggan::all();
         if ($request->ajax()) {
 
 
-            return DataTables()->of($list_produk)
+            return DataTables()->of($list_pelanggan)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
                     $button = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-warning btn-sm edit-post"><i class="far fa-edit"></i> Edit</a>';
@@ -34,7 +32,7 @@ class ProdukController extends Controller
                 ->addIndexColumn()
                 ->make(true);
         }
-        return view('admin.produk.index');
+        return view('admin.pelanggan.index');
     }
 
     /**
@@ -55,18 +53,7 @@ class ProdukController extends Controller
      */
     public function store(Request $request)
     {
-        $id = $request->id;
-
-        $post   =   Produk::updateOrCreate(
-            ['id' => $id],
-            [
-                'nama_produk' => $request->nama_produk,
-                'harga' => $request->harga
-
-            ]
-        );
-
-        return response()->json($post);
+        //
     }
 
     /**
@@ -88,10 +75,7 @@ class ProdukController extends Controller
      */
     public function edit($id)
     {
-        $where = array('id' => $id);
-        $post  = Produk::where($where)->first();
-
-        return response()->json($post);
+        //
     }
 
     /**
@@ -114,8 +98,6 @@ class ProdukController extends Controller
      */
     public function destroy($id)
     {
-        $post = Produk::where('id', $id)->delete();
-
-        return response()->json($post);
+        //
     }
 }
