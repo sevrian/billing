@@ -41,7 +41,7 @@
                                 <thead>
                                     <tr>
                                        
-                                        <th scope="col">Pelanggan ID</th>
+                                        <th scope="col">Customer ID</th>
                                         <th scope="col">Customer Name</th>
                                         <th scope="col">Address</th>
                                         <th scope="col">Phone</th>

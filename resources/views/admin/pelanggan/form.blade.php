@@ -13,7 +13,11 @@
 
                 <div class="modal-body">
                     <input type="hidden" id="id" name="id">
-                    <label>Name Products </label>
+                    <label>Customer ID</label>
+                    <div class="form-group">
+                        <input type="text" placeholder="Name Role" class="form-control" id="nama_produk" name="nama_produk" value="" required>
+                    </div>
+                    <label>Name Customer </label>
                     <div class="form-group">
                         <input type="text" placeholder="Name Role" class="form-control" id="nama_produk" name="nama_produk" value="" required>
                     </div>
