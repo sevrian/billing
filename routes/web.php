@@ -19,14 +19,16 @@ use Illuminate\Support\Facades\DB;
 
 
 Auth::routes();
-
 Route::get('/', function () {
     return view('auth.loginApp');
 });
+
+
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/home', 'HomeController@index')->name('home');
-    Route::get('role/api', 'RoleController@apirole')->name('api.role');
-    Route::resource('role', 'RoleController');
+    Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+    // Route::get('role/api', 'RoleController@apirole')->name('api.role');
+    // Route::resource('role', 'RoleController');
+    Route::resource('admin', 'Admin\UserController');
 
     Route::resource('produk', 'Admin\ProdukController');
     Route::resource('pelanggan', 'Admin\PelangganController');

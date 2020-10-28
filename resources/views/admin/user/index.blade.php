@@ -1,4 +1,7 @@
 @extends('layout.index')
+@push('css')
+<link rel="stylesheet" type="text/css" href="{{url('app-assets/css/plugins/forms/validation/form-validation.css')}}">
+@endpush
 
 @section('content')
 
@@ -7,14 +10,14 @@
         <div class="content-header-left col-md-9 col-12 mb-2">
             <div class="row breadcrumbs-top">
                 <div class="col-12">
-                    <h2 class="content-header-title float-left mb-0">Produts</h2>
+                    <h2 class="content-header-title float-left mb-0">User Admin</h2>
                     <div class="breadcrumb-wrapper col-12">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="sk-layout-2-columns.html">Home</a>
                             </li>
-                            <li class="breadcrumb-item"><a href="#">Product</a>
+                            <li class="breadcrumb-item"><a href="#">Users</a>
                             </li>
-                            <li class="breadcrumb-item active">List Puducts
+                            <li class="breadcrumb-item active">List Users
                             </li>
                         </ol>
                     </div>
@@ -23,7 +26,7 @@
         </div>
         <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
             <a href="javascript:void(0)" type="button" data-toggle="addProduk" id="tombol-tambah"
-                class="btn btn-primary mr-1 mb-1 waves-effect waves-light ">Add Products</a>
+                class="btn btn-primary mr-1 mb-1 waves-effect waves-light ">Add Users</a>
         </div>
     </div>
 
@@ -31,18 +34,17 @@
 
         <section id="css-classes" class="card">
             <div class="card-header">
-                <h4 class="card-title">List Produts</h4>
+                <h4 class="card-title">List Users</h4>
             </div>
             <div class="card-content">
                 <div class="card-body">
                     <div class="card-text">
                         <div class="table-responsive">
-                            <table class="table table-sm table-borderless table-striped " id="table_produk">
+                            <table class="table table-sm table-borderless table-striped " id="table_admin">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th scope="col">Name Products</th>
-                                        <th scope="col">Price</th>
+                                        <th scope="col">Name User</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
@@ -56,7 +58,7 @@
                 </div>
             </div>
             {{-- Modal create --}}
-            @include('admin.produk.form')
+            @include('admin.user.form')
             <div class="modal fade" tabindex="-1" role="dialog" id="konfirmasi-modal" data-backdrop="false">
                <div class="modal-dialog" role="document">
                    <div class="modal-content">
@@ -86,6 +88,9 @@
 </div>
 @endsection
 
+@push('js')
+<script src="{{ url ('app-assets/js/scripts/forms/validation/form-validation.js')}}"></script>
+@endpush
 @push('scripts')
 <script>
     //CSRF TOKEN PADA HEADER
@@ -111,7 +116,7 @@
             var from_date = $('#from_date').val();
             var to_date = $('#to_date').val();
             if (from_date != '' && to_date != '') {
-                $('#table_produk').DataTable().destroy();
+                $('#table_admin').DataTable().destroy();
                 load_data(from_date, to_date);
             } else {
                 alert('Both Date is required');
@@ -121,7 +126,7 @@
         $('#refresh').click(function () {
             $('#from_date').val('');
             $('#to_date').val('');
-            $('#table_produk').DataTable().destroy();
+            $('#table_admin').DataTable().destroy();
             load_data();
         });
 
@@ -129,11 +134,11 @@
         //script untuk memanggil data json dari server dan menampilkannya berupa datatable
         //load data menggunakan parameter tanggal dari dan tanggal hingga
         function load_data(from_date = '', to_date = '') {
-            $('#table_produk').DataTable({
+            $('#table_admin').DataTable({
                 //  processing: true,
                 serverSide: true, //aktifkan server-side 
                 ajax: {
-                    url: "{{ route('produk.index') }}",
+                    url: "{{ route('admin.index') }}",
                     type: 'GET',
                     data: {
                         from_date: from_date,
@@ -145,14 +150,10 @@
                         name: 'DT_RowIndex'
                     },
                     {
-                        data: 'nama_produk',
-                        name: 'nama_produk'
+                        data: 'name',
+                        name: 'name'
                     },
-                    {
-                        data: 'harga',
-                        name: 'harga'
-                    },
-
+                  
                     {
                         data: 'action',
                         name: 'action'
@@ -172,7 +173,7 @@
         $('#button-simpan').val("create-post"); //valuenya menjadi create-post
         $('#id').val(''); //valuenya menjadi kosong
         $('#form-tambah-edit').trigger("reset"); //mereset semua input dll didalamnya
-        $('#modal-judul').html("Tambah Produk Baru"); //valuenya tambah pegawai baru
+        $('#modal-judul').html("Add New User"); //valuenya tambah pegawai baru
         $('#tambah-edit-modal').modal('show'); //modal tampil
     });
 
@@ -189,14 +190,14 @@
                 $.ajax({
                     data: $('#form-tambah-edit')
                         .serialize(), //function yang dipakai agar value pada form-control seperti input, textarea, select dll dapat digunakan pada URL query string ketika melakukan ajax request
-                    url: "{{ route('produk.store') }}", //url simpan data
+                    url: "{{ route('admin.store') }}", //url simpan data
                     type: "POST", //karena simpan kita pakai method POST
                     dataType: 'json', //data tipe kita kirim berupa JSON
                     success: function (data) { //jika berhasil 
                         $('#form-tambah-edit').trigger("reset"); //form reset
                         $('#tambah-edit-modal').modal('hide'); //modal hide
                         $('#tombol-simpan').html('Simpan'); //tombol simpan
-                        var oTable = $('#table_produk')
+                        var oTable = $('#table_admin')
                             .dataTable(); //inialisasi datatable
                         oTable.fnDraw(false); //reset datatable
                         iziToast.success({ //tampilkan iziToast dengan notif data berhasil disimpan pada posisi kanan bawah
@@ -219,15 +220,17 @@
     //ketika class edit-post yang ada pada tag body di klik maka
     $('body').on('click', '.edit-post', function () {
         var data_id = $(this).data('id');
-        $.get('produk/' + data_id + '/edit', function (data) {
+        $.get('admin/' + data_id + '/edit', function (data) {
             $('#modal-judul').html("Edit Post");
             $('#tombol-simpan').val("edit-post");
             $('#tambah-edit-modal').modal('show');
 
             //set value masing-masing id berdasarkan data yg diperoleh dari ajax get request diatas               
             $('#id').val(data.id);
-            $('#nama_produk').val(data.nama_produk);
-            $('#harga').val(data.harga);
+            $('#name').val(data.name);
+            $('#password').val(data.password);
+            $('#role').val(data.role);
+            $('#email').val(data.email);
             
         })
     });
@@ -242,7 +245,7 @@
     $('#tombol-hapus').click(function () {
         $.ajax({
 
-            url: "produk/" + dataId, //eksekusi ajax ke url ini
+            url: "admin/" + dataId, //eksekusi ajax ke url ini
             type: 'delete',
             beforeSend: function () {
                 $('#tombol-hapus').text('Hapus Data'); //set text untuk tombol hapus
@@ -250,7 +253,7 @@
             success: function (data) { //jika sukses
                 setTimeout(function () {
                     $('#konfirmasi-modal').modal('hide'); //sembunyikan konfirmasi modal
-                    var oTable = $('#table_produk').dataTable();
+                    var oTable = $('#table_admin').dataTable();
                     oTable.fnDraw(false); //reset datatable
                 });
                 iziToast.warning({ //tampilkan izitoast warning
@@ -264,3 +267,4 @@
     });
 </script>
 @endpush
+

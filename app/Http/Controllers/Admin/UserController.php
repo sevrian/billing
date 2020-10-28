@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -13,9 +14,25 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $list_user = User::all();
+        if ($request->ajax()) {
+
+
+            return DataTables()->of($list_user)
+                ->addIndexColumn()
+                ->addColumn('action', function ($data) {
+                    $button = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-warning btn-sm edit-post"><i class="far fa-edit"></i> Edit</a>';
+                    $button .= '&nbsp;&nbsp;';
+                    $button .= '<button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm"><i class="far fa-trash-alt"></i> Delete</button>';
+                    return $button;
+                })
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+        return view('admin.user.index');
     }
 
     /**
@@ -25,7 +42,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -36,7 +52,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $id = $request->id;
+
+        $post   =   User::updateOrCreate(
+            ['id' => $id],
+            [
+                'name' => $request->name,
+                'password' => Hash::make($request->password),
+                'role' => $request->role,
+                'email' => $request->email,
+
+            ]
+        );
+
+        return response()->json($post);
     }
 
     /**
@@ -58,7 +87,10 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $where = array('id' => $id);
+        $post  = User::where($where)->first();
+
+        return response()->json($post);
     }
 
     /**
@@ -70,7 +102,6 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
@@ -81,6 +112,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = User::where('id', $id)->delete();
+
+        return response()->json($post);
     }
 }

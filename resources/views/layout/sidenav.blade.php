@@ -15,7 +15,7 @@
     <div class="shadow-bottom"></div>
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-            <li class="{{ Request::is('/')?'active':''}}"><a href="{{url ('/')}}"><i class="feather icon-home"></i><span
+            <li class="{{ Request::is('/dashboard')?'active':''}}"><a href="{{url ('/dashboard')}}"><i class="feather icon-home"></i><span
                         class="menu-title" data-i18n="Dashboard">Dashboard</span></a>
             </li>
             <li class=" nav-item"><a href="#"><i class="feather icon-box"></i><span class="menu-title"
@@ -24,7 +24,7 @@
                     <li class="{{ Request::is('pelanggan')?'active':''}}"><a href="{{ url ('pelanggan')}}"><i></i><span
                                 class="menu-item" data-i18n="2 columns">Customers</span></a>
                     </li>
-                    <li class="{{ Request::is('siswa')?'active':''}}"><a href="{{ url ('siswa')}}"><i></i><span
+                    <li class="{{ Request::is('admin')?'active':''}}"><a href="{{ url ('admin')}}"><i></i><span
                                 class="menu-item" data-i18n="Fixed navbar">Admin</span></a>
                     </li>
                 </ul>
