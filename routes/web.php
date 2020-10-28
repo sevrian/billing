@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\RoleController;
+use GuzzleHttp\Middleware;
+use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 
@@ -15,11 +17,17 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
-Route::get('/', function () {
-    return view('layout.index');
-});
-Route::get('role/api', 'RoleController@apirole')->name('api.role');
-Route::resource('role', 'RoleController');
 
-Route::resource('produk', 'Admin\ProdukController');
-Route::resource('pelanggan', 'Admin\PelangganController');
+Auth::routes();
+
+Route::get('/', function () {
+    return view('auth.loginApp');
+});
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('role/api', 'RoleController@apirole')->name('api.role');
+    Route::resource('role', 'RoleController');
+
+    Route::resource('produk', 'Admin\ProdukController');
+    Route::resource('pelanggan', 'Admin\PelangganController');
+});

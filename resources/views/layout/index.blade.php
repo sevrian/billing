@@ -320,7 +320,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         <li class="dropdown dropdown-user nav-item"><a
                                 class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
                                 <div class="user-nav d-sm-flex d-none"><span
-                                        class="user-name text-bold-600">Budi</span><span
+                                        class="user-name text-bold-600">{{ Auth::user()->name}}</span><span
                                         class="user-status">admin</span></div><span><img class="round"
                                         src="{{ url ('app-assets/images/portrait/small/avatar-s-11.jpg')}}" alt="avatar"
                                         height="40" width="40"></span>
@@ -330,8 +330,12 @@ License: You must have a valid license purchased only from themeforest(the above
                                     href="#"><i class="feather icon-mail"></i> My Inbox</a><a class="dropdown-item"
                                     href="#"><i class="feather icon-check-square"></i> Task</a><a class="dropdown-item"
                                     href="#"><i class="feather icon-message-square"></i> Chats</a>
-                                <div class="dropdown-divider"></div><a class="dropdown-item" href="#"><i
+                                <div class="dropdown-divider"></div><a  class="dropdown-item" href="{{ route('logout') }}"  onclick="event.preventDefault();
+                                document.getElementById('logout-form').submit();"> <i
                                         class="feather icon-power"></i> Logout</a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                            @csrf
+                                        </form>
                             </div>
                         </li>
                     </ul>
@@ -488,9 +492,9 @@ License: You must have a valid license purchased only from themeforest(the above
     <script src="{{ url ('app-assets/js/scripts/extensions/sweet-alerts.js')}}"></script>
     <script src="{{ url ('app-assets/js/scripts/datatables/datatable.js')}}"></script>
     <script src="{{url ('app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
-    
+
     <script src="{{url ('app-assets/js/scripts/modal/components-modal.js')}}"></script>
-    
+
     <!-- END: Theme JS-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
 
