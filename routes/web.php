@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Web Route
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
@@ -26,11 +26,9 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
-    // Route::get('role/api', 'RoleController@apirole')->name('api.role');
-    // Route::resource('role', 'RoleController');
     Route::resource('admin', 'Admin\UserController');
+    Route::resource('role', 'Admin\RoleController');
     Route::get('adminview', 'admin\UserController@view')->name('adminview');
-
     Route::resource('produk', 'Admin\ProdukController');
     Route::resource('pelanggan', 'Admin\PelangganController');
 });

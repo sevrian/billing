@@ -29,7 +29,7 @@
 
     <div class="content-body">
 
-        <section id="css-classes" class="card">
+        <section id=" produk" class="card">
             <div class="card-header">
                 <h4 class="card-title">List Produts</h4>
             </div>
@@ -56,10 +56,8 @@
                     </div>
                 </div>
             </div>
-            {{-- Modal create --}}
             @include('admin.produk.form')
-            <div class="modal fade text-left" id="konfirmasi-modal" tabindex="-1" role="dialog"
-                aria-labelledby="myModalLabel120" aria-hidden="true">
+            <div class="modal fade text-left" id="konfirmasi-modal">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                         <div class="modal-header bg-danger white">
@@ -81,6 +79,9 @@
                     </div>
                 </div>
             </div>
+        </section>
+            {{-- Modal create --}}
+           
             <!--/ CSS Classes -->
 
 
@@ -142,13 +143,13 @@
                         var tproduk = $('#table-produk').dataTable(); //inialisasi datatable
                         tproduk.fnDraw(false); //reset datatable
                         Swal.fire({
-                        title: "Good job!",
-                        text: "You clicked the button!",
-                        type: "success",
-                        confirmButtonClass: 'btn btn-primary',
-                        buttonsStyling: false,
+                            title: "Good job!",
+                            text: "You clicked the button!",
+                            type: "success",
+                            confirmButtonClass: 'btn btn-primary',
+                            buttonsStyling: false,
                         });
-                        },
+                    },
                     error: function (data) { //jika error tampilkan error pada console
                         console.log('Error:', data);
                         $('#btnsave').html('Simpan');
@@ -157,6 +158,21 @@
             }
         })
     }
+    //TOMBOL EDIT DATA PER PEGAWAI DAN TAMPIKAN DATA BERDASARKAN ID PEGAWAI KE MODAL
+    //ketika class edit-post yang ada pada tag body di klik maka
+    $('body').on('click', '.edit-post', function () {
+        var data_id = $(this).data('id');
+        $.get('produk/' + data_id + '/edit', function (data) {
+            $('#modal-judul').html("Edit Post");
+            $('#btnsave').val("edit-post");
+            $('#modal-produk').modal('show');
+
+            //set value masing-masing id berdasarkan data yg diperoleh dari ajax get request diatas               
+            $('#id').val(data.id);
+            $('#nama_produk').val(data.nama_produk);
+            $('#harga').val(data.harga);
+        })
+    });
 
     $(document).on('click', '.delete', function () {
             dataId = $(this).attr('id');

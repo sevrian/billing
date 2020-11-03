@@ -27,6 +27,9 @@
                     <li class="{{ Request::is('admin')?'active':''}}"><a href="{{ url ('admin')}}"><i></i><span
                                 class="menu-item" data-i18n="Fixed navbar">Admin</span></a>
                     </li>
+                    <li class="{{ Request::is('role')?'active':''}}"><a href="{{ url ('role')}}"><i></i><span
+                        class="menu-item" data-i18n="Fixed navbar">Role</span></a>
+            </li>
                 </ul>
             </li>
             <li class=" {{ Request::is('produk')?'active':''}}"><a href="{{ url ('produk')}}""><i class=" feather

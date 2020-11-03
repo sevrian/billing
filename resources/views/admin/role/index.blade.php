@@ -14,7 +14,7 @@
                             </li>
                             <li class="breadcrumb-item"><a href="#">Role</a>
                             </li>
-                            <li class="breadcrumb-item active">Role
+                            <li class="breadcrumb-item active">List Role
                             </li>
                         </ol>
                     </div>
@@ -22,32 +22,33 @@
             </div>
         </div>
         <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-            <a onclick="addForm()" type="button" data-toggle="modal" 
-                class="btn btn-primary mr-1 mb-1 waves-effect waves-light ">Add Role</a>
+            <a href="javascript:void(0)" class="btn btn-primary mr-1 mb-1 waves-effect waves-light "
+                id="tombol-tambah">Add Role</a>
         </div>
     </div>
 
     <div class="content-body">
 
-        <section id="css-classes" class="card"> 
+        <section id="role" class="card">
             <div class="card-header">
-                <h4 class="card-title">Daftar Role</h4>
+                <h4 class="card-title">List Role</h4>
             </div>
             <div class="card-content">
                 <div class="card-body">
                     <div class="card-text">
                         <div class="table-responsive">
-                            <table class="table table-sm table-borderless table-striped table-role" >
+                            <table class="table table-sm table-borderless table-striped " id="table-role"
+                                class="display">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th scope="col">Nama Role</th>
-                                        <th scope="col">Keterangan</th>
-                                        <th scope="col">Aksi</th>
+                                        <th scope="col">Name Role</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col" width="250px">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                  
+
 
                                 </tbody>
                             </table>
@@ -55,11 +56,35 @@
                     </div>
                 </div>
             </div>
-            {{-- Modal create --}}
-           @include('admin.role.form')
-            
+            <div class="modal fade text-left" id="konfirmasi-modal" >
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger white">
+                            <h5 class="modal-title" id="myModalLabel120">PERHATIAN !</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p align="center">Data akan dihapus secara permanen <br>
+                                Anda yakin akan mengehapus data ini.
+                            </p>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" name="btndelete"
+                                id="btndelete">Hapus</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @include('admin.role.form')
         </section>
-        <!--/ CSS Classes -->
+            {{-- Modal create --}}
+           
+
+          
+            <!--/ CSS Classes -->
 
 
     </div>
@@ -67,108 +92,119 @@
 @endsection
 
 @push('scripts')
-    <script type="text/javascript">
-  
-        var table = $('.table-role').DataTable({
+<script type="text/javascript">
+    $(document).ready(function () {
+        var trole = $('#table-role').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route ('api.role') }}",
+            ajax: {
+                url: '{{ url('role') }}',
+                type: 'GET'
+            },
             columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
-                },
-                {
-                    data: 'nama',
-                    name: 'nama'
-                },
-                {
-                    data: 'keterangan',
-                    name: 'keterangan'
+                    data: 'DT_RowIndex'
                 },
 
                 {
+                    data: 'nama'
+                },
+                {
+                    data: 'keterangan'
+                },
+                {
                     data: 'action',
-                    name: 'action',
-                    orderable: true,
+                    orderable: false,
                     searchable: false
                 }
             ]
         });
+    });
+    $('#tombol-tambah').click(function () {
+        $('#btnsave').val("create-post"); //valuenya menjadi create-post
+        $('#id').val(''); //valuenya menjadi kosong
+        $('#form-role').trigger("reset"); //mereset semua input dll didalamnya
+        $('#modal-judul').html("Add New Role"); //valuenya tambah pegawai baru
+        $('#modal-role').modal('show'); //modal tampil
+    });
+    if ($("#form-role").length > 0) {
+        $("#form-role").validate({
+            submitHandler: function (form) {
+                var actionType = $('#btnsave').val();
+                $('#btnsave').html('Sending..');
 
-        function addForm() {
-            save_method = "add";
-            $('input[name=_method]').val('POST');
-            $('#modalForm').modal('show');
-            $('.modal-title').text('Add Role');
-            $('#modalForm form')[0].reset();
-        }
+                $.ajax({
+                    data: $('#form-role')
+                        .serialize(), //function yang dipakai agar value pada form-control seperti input, textarea, select dll dapat digunakan pada URL query string ketika melakukan ajax request
+                    url: "{{ route('role.store') }}", //url simpan data
+                    type: "POST", //karena simpan kita pakai method POST
+                    dataType: 'json', //data tipe kita kirim berupa JSON
+                    success: function (data) { //jika berhasil 
+                        $('#form-role').trigger("reset"); //form reset
+                        $('#modal-role').modal('hide'); //modal hide
+                        $('#btnsave').html('Simpan'); //tombol simpan
+                        var trole = $('#table-role').dataTable(); //inialisasi datatable
+                        trole.fnDraw(false); //reset datatable
+                        Swal.fire({
+                            title: "Good job!",
+                            text: "You clicked the button!",
+                            type: "success",
+                            confirmButtonClass: 'btn btn-primary',
+                            buttonsStyling: false,
+                        });
+                    },
+                    error: function (data) { //jika error tampilkan error pada console
+                        console.log('Error:', data);
+                        $('#btnsave').html('Simpan');
+                    }
+                });
+            }
+        })
+    }
+    //TOMBOL EDIT DATA PER PEGAWAI DAN TAMPIKAN DATA BERDASARKAN ID PEGAWAI KE MODAL
+    //ketika class edit-post yang ada pada tag body di klik maka
+    $('body').on('click', '.edit-post', function () {
+        var data_id = $(this).data('id');
+        $.get('role/' + data_id + '/edit', function (data) {
+            $('#modal-judul').html("Edit Role");
+            $('#btnsave').val("edit-post");
+            $('#modal-role').modal('show');
 
-        function editForm(id) {
-           
-            save_method = "edit";
-            $('input[name=_method]').val('PATCH');
-            $('#modalForm form')[0].reset();
-            $.ajax({
-                url: "{{ url ('role')}}" + '/' + id + "/edit",
-                type: "GET",
-                dataType: "JSON",
-              
-                success: function (data) {
-                    $('#modalForm').modal('show');
-                    $('.modal-title').text('Edit Role');
-                    $('#id').val(data.id);
-                    $('#nama').val(data.nama);
-                    $('#keterangan').val(data.keterangan);
-                },
-                error: function () {
-                    alert("waduuuh! Update Eror buos");
-                }
-            });
+            //set value masing-masing id berdasarkan data yg diperoleh dari ajax get request diatas               
+            $('#id').val(data.id);
+            $('#nama').val(data.nama);
+            $('#keterangan').val(data.keterangan);
+        })
+    });
 
-        }
+    $(document).on('click', '.delete', function () {
+        dataId = $(this).attr('id');
+        $('#konfirmasi-modal').modal('show');
+    });
 
-        $(function () {
-         
-            $('#modalForm form').validator().on('submit', function (e) {
-                if (!e.isDefaultPrevented()) {
-                    var id = $('#id').val();
-                    if (save_method == 'add') url = "{{ url ('role')}}";
-                    else url = "{{ url ('role') . '/' }}" + id;
+    //jika tombol hapus pada modal konfirmasi di klik maka
+    $('#btndelete').click(function () {
+        $.ajax({
 
-                    $.ajax({
-                        type: "PATH",
-                        url: url,
-                        data: $('#modalForm from').serialize(),
-                        success: function ($data) {
-                            $('#modalForm').modal('hide');
-                            table.ajax.reload();
-                         },
-                        error: function () {
-                            alert("waduuuh!  Eror buos");
-                        }
-                    });
-                    return false;
-                }
-            });
-        });
-
-        function deleteData(id){
-           var popup = confirm("yakin?");
-           var csrf_token = $('meta[name="csrf-token"]').attr('content');
-           if(popup == true){
-              $.ajax({
-                 type: "POST",
-                 url: "{{ url ('role')}}"+ '/'+ id ,
-                 data: {'_method':'DELETE','_token': csrf_token},
-                 success : function (data) {
-                    table.ajax.reload();
-                    console.log(data);
-                 },
-                 error: function(){
-                    alert("ops");
-                 }
-              })
-           } 
-        }
-    </script>
+            url: "role/" + dataId, //eksekusi ajax ke url ini
+            type: 'delete',
+            beforeSend: function () {
+                $('#btndelete').text('Hapus Data'); //set text untuk tombol hapus
+            },
+            success: function (data) { //jika sukses
+                setTimeout(function () {
+                    $('#konfirmasi-modal').modal('hide'); //sembunyikan konfirmasi modal
+                    var trole = $('#table-role').dataTable();
+                    trole.fnDraw(false); //reset datatable
+                });
+                Swal.fire({
+                    title: "Good job!",
+                    text: "You clicked the button!",
+                    type: "success",
+                    confirmButtonClass: 'btn btn-primary',
+                    buttonsStyling: false,
+                });
+            }
+        })
+    });
+</script>
 @endpush
