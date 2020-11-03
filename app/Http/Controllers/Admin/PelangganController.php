@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Model\Pelanggan;
 use Illuminate\Http\Request;
+use App\User;
 
 class PelangganController extends Controller
 {
@@ -18,14 +19,14 @@ class PelangganController extends Controller
 
         $list_pelanggan = Pelanggan::all();
         if ($request->ajax()) {
-
-
             return DataTables()->of($list_pelanggan)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
                     $button = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-warning btn-sm edit-post"><i class="far fa-edit"></i> Edit</a>';
-                    $button .= '&nbsp;&nbsp;';
+                    $button .= '&nbsp;';
                     $button .= '<button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm"><i class="far fa-trash-alt"></i> Delete</button>';
+                    // $button .= '&nbsp;';
+                    // $button .= '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="View" class="edit btn btn-primary btn-sm view-post"><i class="far fa-edit"></i> View</a>';
                     return $button;
                 })
                 ->rawColumns(['action'])
@@ -53,7 +54,27 @@ class PelangganController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        $id = $request->id;
+
+        $post   =   Pelanggan::updateOrCreate(
+            ['id' => $id],
+            [
+                'user_id' => $request->user_id,
+                'nama' => $request->nama,
+                'alamat' => $request->alamat,
+                'telepon' => $request->telepon,
+                'email' => $request->email
+            ]
+        );
+        $user = new User();
+        $user->role = 'member';
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->email;
+
+
+        return response()->json($post);
     }
 
     /**
@@ -64,7 +85,10 @@ class PelangganController extends Controller
      */
     public function show($id)
     {
-        //
+        $where = array('id' => $id);
+        $post  = Pelanggan::where($where)->first();
+
+        return response()->json($post);
     }
 
     /**
@@ -75,7 +99,10 @@ class PelangganController extends Controller
      */
     public function edit($id)
     {
-        //
+        $where = array('id' => $id);
+        $post  = Pelanggan::where($where)->first();
+
+        return response()->json($post);
     }
 
     /**
@@ -98,6 +125,7 @@ class PelangganController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Pelanggan::where('id', $id)->delete();
+        return response()->json($post);
     }
 }

@@ -22,8 +22,8 @@
             </div>
         </div>
         <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-            <a href="javascript:void(0)" type="button" data-toggle="addProduk" id="tombol-tambah"
-                class="btn btn-primary mr-1 mb-1 waves-effect waves-light ">Add Products</a>
+            <a href="javascript:void(0)" class="btn btn-primary mr-1 mb-1 waves-effect waves-light "
+                id="tombol-tambah">Add Products</a>
         </div>
     </div>
 
@@ -37,13 +37,14 @@
                 <div class="card-body">
                     <div class="card-text">
                         <div class="table-responsive">
-                            <table class="table table-sm table-borderless table-striped " id="table_produk">
+                            <table class="table table-sm table-borderless table-striped " id="table-produk"
+                                class="display">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th scope="col">Name Products</th>
                                         <th scope="col">Price</th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col" width="250px">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -57,29 +58,30 @@
             </div>
             {{-- Modal create --}}
             @include('admin.produk.form')
-            <div class="modal fade" tabindex="-1" role="dialog" id="konfirmasi-modal" data-backdrop="false">
-               <div class="modal-dialog" role="document">
-                   <div class="modal-content">
-                       <div class="modal-header">
-                           <h5 class="modal-title">PERHATIAN</h5>
-                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                               <span aria-hidden="true">&times;</span>
-                           </button>
-                       </div>
-                       <div class="modal-body">
-                           <p><b>Jika menghapus Pegawai maka</b></p>
-                           <p>*data pegawai tersebut hilang selamanya, apakah anda yakin?</p>
-                       </div>
-                       <div class="modal-footer bg-whitesmoke br">
-                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                           <button type="button" class="btn btn-danger" name="tombol-hapus" id="tombol-hapus">Hapus
-                               Data</button>
-                       </div>
-                   </div>
-               </div>
-           </div>
-        </section>
-        <!--/ CSS Classes -->
+            <div class="modal fade text-left" id="konfirmasi-modal" tabindex="-1" role="dialog"
+                aria-labelledby="myModalLabel120" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger white">
+                            <h5 class="modal-title" id="myModalLabel120">PERHATIAN !</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p align="center">Data akan dihapus secara permanen <br>
+                                Anda yakin akan mengehapus data ini.
+                            </p>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" name="btndelete"
+                                id="btndelete">Hapus</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/ CSS Classes -->
 
 
     </div>
@@ -87,180 +89,104 @@
 @endsection
 
 @push('scripts')
-<script>
-    //CSRF TOKEN PADA HEADER
-    //Script ini wajib krn kita butuh csrf token setiap kali mengirim request post, patch, put dan delete ke server
+<script type="text/javascript">
     $(document).ready(function () {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        //jalankan function load_data diawal agar data ter-load
-        load_data();
-
-        //Iniliasi datepicker pada class input
-        $('.input-daterange').datepicker({
-            todayBtn: 'linked',
-            format: 'yyyy-mm-dd',
-            autoclose: true
-        });
-
-        $('#filter').click(function () {
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
-            if (from_date != '' && to_date != '') {
-                $('#table_produk').DataTable().destroy();
-                load_data(from_date, to_date);
-            } else {
-                alert('Both Date is required');
-            }
-        });
-
-        $('#refresh').click(function () {
-            $('#from_date').val('');
-            $('#to_date').val('');
-            $('#table_produk').DataTable().destroy();
-            load_data();
-        });
-
-        //LOAD DATATABLE
-        //script untuk memanggil data json dari server dan menampilkannya berupa datatable
-        //load data menggunakan parameter tanggal dari dan tanggal hingga
-        function load_data(from_date = '', to_date = '') {
-            $('#table_produk').DataTable({
-                //  processing: true,
-                serverSide: true, //aktifkan server-side 
-                ajax: {
-                    url: "{{ route('produk.index') }}",
-                    type: 'GET',
-                    data: {
-                        from_date: from_date,
-                        to_date: to_date
-                    } //jangan lupa kirim parameter tanggal 
+        var tproduk = $('#table-produk').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{ url('produk') }}',
+                type: 'GET'
+            },
+            columns: [{
+                    data: 'DT_RowIndex'
                 },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex'
-                    },
-                    {
-                        data: 'nama_produk',
-                        name: 'nama_produk'
-                    },
-                    {
-                        data: 'harga',
-                        name: 'harga'
-                    },
 
-                    {
-                        data: 'action',
-                        name: 'action'
-                    },
-
-                ],
-                order: [
-                    [0, 'asc']
-                ]
-            });
-        }
+                {
+                    data: 'nama_produk'
+                },
+                {
+                    data: 'harga'
+                },
+                {
+                    data: 'action',
+                    orderable: false,
+                    searchable: false
+                }
+            ]
+        });
     });
-
-    //TOMBOL TAMBAH DATA
-    //jika tombol-tambah diklik maka
     $('#tombol-tambah').click(function () {
-        $('#button-simpan').val("create-post"); //valuenya menjadi create-post
+        $('#btnsave').val("create-post"); //valuenya menjadi create-post
         $('#id').val(''); //valuenya menjadi kosong
-        $('#form-tambah-edit').trigger("reset"); //mereset semua input dll didalamnya
-        $('#modal-judul').html("Tambah Produk Baru"); //valuenya tambah pegawai baru
-        $('#tambah-edit-modal').modal('show'); //modal tampil
+        $('#form-prduk').trigger("reset"); //mereset semua input dll didalamnya
+        $('#modal-judul').html("Add New Produk"); //valuenya tambah pegawai baru
+        $('#modal-produk').modal('show'); //modal tampil
     });
-
-
-    //SIMPAN & UPDATE DATA DAN VALIDASI (SISI CLIENT)
-    //jika id = form-tambah-edit panjangnya lebih dari 0 atau bisa dibilang terdapat data dalam form tersebut maka
-    //jalankan jquery validator terhadap setiap inputan dll dan eksekusi script ajax untuk simpan data
-    if ($("#form-tambah-edit").length > 0) {
-        $("#form-tambah-edit").validate({
+    if ($("#form-produk").length > 0) {
+        $("#form-produk").validate({
             submitHandler: function (form) {
-                var actionType = $('#tombol-simpan').val();
-                $('#tombol-simpan').html('Sending..');
+                var actionType = $('#btnsave').val();
+                $('#btnsave').html('Sending..');
 
                 $.ajax({
-                    data: $('#form-tambah-edit')
+                    data: $('#form-produk')
                         .serialize(), //function yang dipakai agar value pada form-control seperti input, textarea, select dll dapat digunakan pada URL query string ketika melakukan ajax request
                     url: "{{ route('produk.store') }}", //url simpan data
                     type: "POST", //karena simpan kita pakai method POST
                     dataType: 'json', //data tipe kita kirim berupa JSON
                     success: function (data) { //jika berhasil 
-                        $('#form-tambah-edit').trigger("reset"); //form reset
-                        $('#tambah-edit-modal').modal('hide'); //modal hide
-                        $('#tombol-simpan').html('Simpan'); //tombol simpan
-                        var oTable = $('#table_produk')
-                            .dataTable(); //inialisasi datatable
-                        oTable.fnDraw(false); //reset datatable
-                        iziToast.success({ //tampilkan iziToast dengan notif data berhasil disimpan pada posisi kanan bawah
-                            title: 'Data Berhasil Disimpan',
-                            message: '{{ Session('
-                            success ')}}',
-                            position: 'bottomRight'
+                        $('#form-produk').trigger("reset"); //form reset
+                        $('#modal-produk').modal('hide'); //modal hide
+                        $('#btnsave').html('Simpan'); //tombol simpan
+                        var tproduk = $('#table-produk').dataTable(); //inialisasi datatable
+                        tproduk.fnDraw(false); //reset datatable
+                        Swal.fire({
+                        title: "Good job!",
+                        text: "You clicked the button!",
+                        type: "success",
+                        confirmButtonClass: 'btn btn-primary',
+                        buttonsStyling: false,
                         });
-                    },
+                        },
                     error: function (data) { //jika error tampilkan error pada console
                         console.log('Error:', data);
-                        $('#tombol-simpan').html('Simpan');
+                        $('#btnsave').html('Simpan');
                     }
                 });
             }
         })
     }
 
-    //TOMBOL EDIT DATA PER PEGAWAI DAN TAMPIKAN DATA BERDASARKAN ID PEGAWAI KE MODAL
-    //ketika class edit-post yang ada pada tag body di klik maka
-    $('body').on('click', '.edit-post', function () {
-        var data_id = $(this).data('id');
-        $.get('produk/' + data_id + '/edit', function (data) {
-            $('#modal-judul').html("Edit Post");
-            $('#tombol-simpan').val("edit-post");
-            $('#tambah-edit-modal').modal('show');
-
-            //set value masing-masing id berdasarkan data yg diperoleh dari ajax get request diatas               
-            $('#id').val(data.id);
-            $('#nama_produk').val(data.nama_produk);
-            $('#harga').val(data.harga);
-            
-        })
-    });
-
-    //jika klik class delete (yang ada pada tombol delete) maka tampilkan modal konfirmasi hapus maka
     $(document).on('click', '.delete', function () {
-        dataId = $(this).attr('id');
-        $('#konfirmasi-modal').modal('show');
-    });
+            dataId = $(this).attr('id');
+            $('#konfirmasi-modal').modal('show');
+        });
 
-    //jika tombol hapus pada modal konfirmasi di klik maka
-    $('#tombol-hapus').click(function () {
-        $.ajax({
+        //jika tombol hapus pada modal konfirmasi di klik maka
+        $('#btndelete').click(function () {
+            $.ajax({
 
-            url: "produk/" + dataId, //eksekusi ajax ke url ini
-            type: 'delete',
-            beforeSend: function () {
-                $('#tombol-hapus').text('Hapus Data'); //set text untuk tombol hapus
-            },
-            success: function (data) { //jika sukses
-                setTimeout(function () {
-                    $('#konfirmasi-modal').modal('hide'); //sembunyikan konfirmasi modal
-                    var oTable = $('#table_produk').dataTable();
-                    oTable.fnDraw(false); //reset datatable
-                });
-                iziToast.warning({ //tampilkan izitoast warning
-                    title: 'Data Berhasil Dihapus',
-                    message: '{{ Session('
-                    delete ')}}',
-                    position: 'bottomRight'
-                });
-            }
-        })
-    });
+                url: "produk/" + dataId, //eksekusi ajax ke url ini
+                type: 'delete',
+                beforeSend: function () {
+                    $('#btndelete').text('Hapus Data'); //set text untuk tombol hapus
+                },
+                success: function (data) { //jika sukses
+                    setTimeout(function () {
+                        $('#konfirmasi-modal').modal('hide'); //sembunyikan konfirmasi modal
+                        var tproduk = $('#table-produk').dataTable();
+                        tproduk.fnDraw(false); //reset datatable
+                    });
+                    Swal.fire({
+                        title: "Good job!",
+                        text: "You clicked the button!",
+                        type: "success",
+                        confirmButtonClass: 'btn btn-primary',
+                        buttonsStyling: false,
+                        });
+                }
+            })
+        });
 </script>
 @endpush

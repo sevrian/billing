@@ -34,6 +34,8 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="stylesheet" type="text/css" href="{{ url ('app-assets/vendors/css/ui/prism.min.css')}}">
     <link rel="stylesheet" type="text/css"
         href="{{ url ('app-assets/vendors/css/tables/datatable/datatables.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url ('app-assets/vendors/css/animate/animate.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url ('app-assets/vendors/css/extensions/sweetalert2.min.css')}}">
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
@@ -481,10 +483,13 @@ License: You must have a valid license purchased only from themeforest(the above
     <script src="{{url ('app-assets/vendors/js/tables/datatable/vfs_fonts.js')}}"></script>
     <script src="{{url ('app-assets/vendors/js/tables/datatable/datatables.min.js')}}"></script>
     <script src="{{url ('app-assets/vendors/js/tables/datatable/datatables.buttons.min.js')}}"></script>
+    <script src="{{url ('app-assets/vendors/js/extensions/sweetalert2.all.min.js')}}"></script>
+    <script src="{{url ('app-assets/vendors/js/extensions/polyfill.min.js')}}"></script>
     <script src="{{url ('app-assets/vendors/js/tables/datatable/buttons.html5.min.js')}}"></script>
     <script src="{{url ('app-assets/vendors/js/tables/datatable/buttons.print.min.js')}}"></script>
     <script src="{{url ('app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js')}}"></script>
     <script src="{{url ('app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js')}}"></script>
+    <script src="{{ url('app-assets/js/scripts/extensions/sweet-alerts.js')}}"></script>
     <!-- END: Page Vendor JS-->
     <!-- BEGIN: Theme JS-->
     <script src="{{ url ('app-assets/js/core/app-menu.js')}}"></script>
@@ -502,13 +507,14 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- BEGIN: Page JS-->
     @stack('js')
     <!-- END: Page JS-->
-    {{-- <script>
+    <script>
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    </script> --}}
+        
+    </script>
 </body>
 <!-- END: Body-->
 

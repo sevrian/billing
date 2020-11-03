@@ -23,9 +23,12 @@ class UserController extends Controller
             return DataTables()->of($list_user)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
+
                     $button = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-warning btn-sm edit-post"><i class="far fa-edit"></i> Edit</a>';
                     $button .= '&nbsp;&nbsp;';
                     $button .= '<button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm"><i class="far fa-trash-alt"></i> Delete</button>';
+                    $button .= '&nbsp;&nbsp;';
+                    $button .= '<a href="admin/' . $data->id . '/view/" name="view" class="view btn btn-danger btn-sm"><i class="far fa-trash-alt"></i> view</a>';
                     return $button;
                 })
                 ->rawColumns(['action'])
@@ -100,8 +103,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function view()
     {
+        return view('admin.user.view');
     }
 
     /**

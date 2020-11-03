@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use App\Model\Produk;
 
 
-
-
 class ProdukController extends Controller
 {
     /**
@@ -18,12 +16,9 @@ class ProdukController extends Controller
      */
     public function index(Request $request)
     {
-        $list_produk = Produk::all();
         if ($request->ajax()) {
-
-
-            return DataTables()->of($list_produk)
-                ->addIndexColumn()
+            $list_produk = Produk::all();
+            return datatables()->of($list_produk)
                 ->addColumn('action', function ($data) {
                     $button = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-warning btn-sm edit-post"><i class="far fa-edit"></i> Edit</a>';
                     $button .= '&nbsp;&nbsp;';
@@ -36,7 +31,6 @@ class ProdukController extends Controller
         }
         return view('admin.produk.index');
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -44,7 +38,6 @@ class ProdukController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -61,8 +54,7 @@ class ProdukController extends Controller
             ['id' => $id],
             [
                 'nama_produk' => $request->nama_produk,
-                'harga' => $request->harga
-
+                'harga' => $request->harga,
             ]
         );
 
@@ -77,7 +69,6 @@ class ProdukController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -87,8 +78,10 @@ class ProdukController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
+
     {
         $where = array('id' => $id);
+
         $post  = Produk::where($where)->first();
 
         return response()->json($post);
@@ -103,7 +96,6 @@ class ProdukController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**

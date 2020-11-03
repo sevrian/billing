@@ -45,7 +45,8 @@
                                     <tr>
                                         <th>#</th>
                                         <th scope="col">Name User</th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col">Role</th>
+                                        <th scope="col-2" width="250px" >Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -69,8 +70,8 @@
                            </button>
                        </div>
                        <div class="modal-body">
-                           <p><b>Jika menghapus Pegawai maka</b></p>
-                           <p>*data pegawai tersebut hilang selamanya, apakah anda yakin?</p>
+                           <p><b>Jika menghapus data maka</b></p>
+                           <p>*data ini tersebut hilang selamanya, apakah anda yakin?</p>
                        </div>
                        <div class="modal-footer bg-whitesmoke br">
                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -105,30 +106,7 @@
         //jalankan function load_data diawal agar data ter-load
         load_data();
 
-        //Iniliasi datepicker pada class input
-        $('.input-daterange').datepicker({
-            todayBtn: 'linked',
-            format: 'yyyy-mm-dd',
-            autoclose: true
-        });
-
-        $('#filter').click(function () {
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
-            if (from_date != '' && to_date != '') {
-                $('#table_admin').DataTable().destroy();
-                load_data(from_date, to_date);
-            } else {
-                alert('Both Date is required');
-            }
-        });
-
-        $('#refresh').click(function () {
-            $('#from_date').val('');
-            $('#to_date').val('');
-            $('#table_admin').DataTable().destroy();
-            load_data();
-        });
+       
 
         //LOAD DATATABLE
         //script untuk memanggil data json dari server dan menampilkannya berupa datatable
@@ -152,6 +130,11 @@
                     {
                         data: 'name',
                         name: 'name'
+                    },
+                  
+                    {
+                        data: 'role',
+                        name: 'role'
                     },
                   
                     {
@@ -221,7 +204,7 @@
     $('body').on('click', '.edit-post', function () {
         var data_id = $(this).data('id');
         $.get('admin/' + data_id + '/edit', function (data) {
-            $('#modal-judul').html("Edit Post");
+            $('#modal-judul').html("Edit User");
             $('#tombol-simpan').val("edit-post");
             $('#tambah-edit-modal').modal('show');
 

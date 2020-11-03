@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Route::get('role/api', 'RoleController@apirole')->name('api.role');
     // Route::resource('role', 'RoleController');
     Route::resource('admin', 'Admin\UserController');
+    Route::get('adminview', 'admin\UserController@view')->name('adminview');
 
     Route::resource('produk', 'Admin\ProdukController');
     Route::resource('pelanggan', 'Admin\PelangganController');

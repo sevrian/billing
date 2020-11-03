@@ -37,7 +37,7 @@
                 <div class="card-body">
                     <div class="card-text">
                         <div class="table-responsive">
-                            <table class="table table-sm table-borderless table-striped " id="table_pelanggan">
+                            <table class="table table-sm table-borderless table-striped " id="table-pelanggan">
                                 <thead>
                                     <tr>
                                        
@@ -45,8 +45,7 @@
                                         <th scope="col">Customer Name</th>
                                         <th scope="col">Address</th>
                                         <th scope="col">Phone</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col" width="200px">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -70,8 +69,8 @@
                            </button>
                        </div>
                        <div class="modal-body">
-                           <p><b>Jika menghapus Pegawai maka</b></p>
-                           <p>*data pegawai tersebut hilang selamanya, apakah anda yakin?</p>
+                           <p><b>Jika menghapus data maka</b></p>
+                           <p>*data tersebut hilang selamanya, apakah anda yakin?</p>
                        </div>
                        <div class="modal-footer bg-whitesmoke br">
                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -90,193 +89,122 @@
 @endsection
 
 @push('scripts')
-<script>
-    //CSRF TOKEN PADA HEADER
-    //Script ini wajib krn kita butuh csrf token setiap kali mengirim request post, patch, put dan delete ke server
-    $(document).ready(function () {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        //jalankan function load_data diawal agar data ter-load
-        load_data();
-
-        //Iniliasi datepicker pada class input
-        $('.input-daterange').datepicker({
-            todayBtn: 'linked',
-            format: 'yyyy-mm-dd',
-            autoclose: true
-        });
-
-        $('#filter').click(function () {
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
-            if (from_date != '' && to_date != '') {
-                $('#table_pelanggan').DataTable().destroy();
-                load_data(from_date, to_date);
-            } else {
-                alert('Both Date is required');
-            }
-        });
-
-        $('#refresh').click(function () {
-            $('#from_date').val('');
-            $('#to_date').val('');
-            $('#table_pelanggan').DataTable().destroy();
-            load_data();
-        });
-
-        //LOAD DATATABLE
-        //script untuk memanggil data json dari server dan menampilkannya berupa datatable
-        //load data menggunakan parameter tanggal dari dan tanggal hingga
-        function load_data(from_date = '', to_date = '') {
-            $('#table_pelanggan').DataTable({
-                //  processing: true,
-                serverSide: true, //aktifkan server-side 
-                ajax: {
-                    url: "{{ route('pelanggan.index') }}",
-                    type: 'GET',
-                    data: {
-                        from_date: from_date,
-                        to_date: to_date
-                    } //jangan lupa kirim parameter tanggal 
-                },
-                columns: [
-                    {
-                        data: 'user_id',
-                        name: 'user_id'
-                    },
-                    {
-                        data: 'nama',
-                        name: 'nama'
-                    },
-
-                    {
-                        data: 'alamat',
-                        name: 'alamat'
-                    },
-                    {
-                        data: 'telepon',
-                        name: 'telepon'
-                    },
-                    {
-                        data: 'email',
-                        name: 'email'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action'
-                    },
-
-                ],
-                order: [
-                    [0, 'asc']
-                ]
-            });
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+      
+      var tpelangggan = $('#table-pelanggan').DataTable({
+        serverSide: true,
+        ajax: {
+            url: '/admin/pelanggan',
+            type: 'GET' 
+        },
+        columns: [
+              {data: 'DT_RowIndex', orderable:false, searchable: false},
+              {data: 'kelas_name'},
+              {data: 'kelas_description'},
+              {data: 'action'},
+              ]
+      });
+  
+      $("#form-kelas").validate({
+        submitHandler: function(form) {
+          var modal = '#modal-add';
+          $.ajax({
+            url: '{{ url("master/kelas") }}',
+            type: 'POST',
+            data: $(form).serialize(),
+          })
+          .done(function() { // selesai dan berhasil
+            swal("Good job!", "You clicked the button!", "success") // alert success
+            $(form)[0].reset(); // reset form
+            tdatatable.ajax.reload(null, false); // reload datatable
+            $(modal).modal('close'); // tutup modal
+          })
+          .fail(function() {
+            console.log("error");
+          });
+  
         }
-    });
-
-    //TOMBOL TAMBAH DATA
-    //jika tombol-tambah diklik maka
-    $('#tombol-tambah').click(function () {
-        $('#button-simpan').val("create-post"); //valuenya menjadi create-post
-        $('#id').val(''); //valuenya menjadi kosong
-        $('#form-tambah-edit').trigger("reset"); //mereset semua input dll didalamnya
-        $('#modal-judul').html("Tambah Produk Baru"); //valuenya tambah pegawai baru
-        $('#tambah-edit-modal').modal('show'); //modal tampil
-    });
-
-
-    //SIMPAN & UPDATE DATA DAN VALIDASI (SISI CLIENT)
-    //jika id = form-tambah-edit panjangnya lebih dari 0 atau bisa dibilang terdapat data dalam form tersebut maka
-    //jalankan jquery validator terhadap setiap inputan dll dan eksekusi script ajax untuk simpan data
-    if ($("#form-tambah-edit").length > 0) {
-        $("#form-tambah-edit").validate({
-            submitHandler: function (form) {
-                var actionType = $('#tombol-simpan').val();
-                $('#tombol-simpan').html('Sending..');
-
-                $.ajax({
-                    data: $('#form-tambah-edit')
-                        .serialize(), //function yang dipakai agar value pada form-control seperti input, textarea, select dll dapat digunakan pada URL query string ketika melakukan ajax request
-                    url: "{{ route('pelanggan.store') }}", //url simpan data
-                    type: "POST", //karena simpan kita pakai method POST
-                    dataType: 'json', //data tipe kita kirim berupa JSON
-                    success: function (data) { //jika berhasil 
-                        $('#form-tambah-edit').trigger("reset"); //form reset
-                        $('#tambah-edit-modal').modal('hide'); //modal hide
-                        $('#tombol-simpan').html('Simpan'); //tombol simpan
-                        var oTable = $('#table_pelanggan')
-                            .dataTable(); //inialisasi datatable
-                        oTable.fnDraw(false); //reset datatable
-                        iziToast.success({ //tampilkan iziToast dengan notif data berhasil disimpan pada posisi kanan bawah
-                            title: 'Data Berhasil Disimpan',
-                            message: '{{ Session('
-                            success ')}}',
-                            position: 'bottomRight'
-                        });
-                    },
-                    error: function (data) { //jika error tampilkan error pada console
-                        console.log('Error:', data);
-                        $('#tombol-simpan').html('Simpan');
-                    }
-                });
-            }
+      });
+  
+      $('#kelas-list-datatable').on('click', '.btn-delete', function(event) {
+        var id = $(this).data('id');
+        event.preventDefault();
+        /* Act on the event */
+        // Ditanyain dulu usernya mau beneran delete data nya nggak.
+        swal({
+          title: "Are you sure?",
+          text: "You will not be able to recover this imaginary file!",
+          icon: 'warning',
+          buttons: {
+            cancel: true,
+            delete: 'Yes, Delete It'
+          }
+        }).then(function (confirm) { // proses confirm
+          if (confirm) { // Bila oke post ajax ke url delete nya
+            // Ajax Post Delete
+            $.ajax({
+              url: '{{ url("master/kelas") }}' + '/' + id,
+              type: 'DELETE',
+            })
+            .done(function() { // Kalau ajax nya success
+              swal("Good job!", "You clicked the button!", "success") // alert success
+              tdatatable.ajax.reload(null, false); // reload datatable
+            })
+            .fail(function() { // Kalau ajax nya gagal
+              console.log("error");
+            });
+  
+          }
         })
-    }
-
-    //TOMBOL EDIT DATA PER PEGAWAI DAN TAMPIKAN DATA BERDASARKAN ID PEGAWAI KE MODAL
-    //ketika class edit-post yang ada pada tag body di klik maka
-    $('body').on('click', '.edit-post', function () {
-        var data_id = $(this).data('id');
-        $.get('pelanggan/' + data_id + '/edit', function (data) {
-            $('#modal-judul').html("Edit Post");
-            $('#tombol-simpan').val("edit-post");
-            $('#tambah-edit-modal').modal('show');
-
-            //set value masing-masing id berdasarkan data yg diperoleh dari ajax get request diatas               
-            $('#id').val(data.id);
-            $('#nama').val(data.nama);
-            $('#user_id').val(data.user_id);
-            $('#alamat').val(data.alamat);
-            $('#telepon').val(data.telepon);
-            $('#email').val(data.email);
-            
-            
-        })
-    });
-
-    //jika klik class delete (yang ada pada tombol delete) maka tampilkan modal konfirmasi hapus maka
-    $(document).on('click', '.delete', function () {
-        dataId = $(this).attr('id');
-        $('#konfirmasi-modal').modal('show');
-    });
-
-    //jika tombol hapus pada modal konfirmasi di klik maka
-    $('#tombol-hapus').click(function () {
+      });
+  
+      $('#kelas-list-datatable').on('click', '.btn-edit', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        var id = $(this).data('id');
+        var modal = '#modal-edit';
         $.ajax({
-
-            url: "pelanggan/" + dataId, //eksekusi ajax ke url ini
-            type: 'delete',
-            beforeSend: function () {
-                $('#tombol-hapus').text('Hapus Data'); //set text untuk tombol hapus
-            },
-            success: function (data) { //jika sukses
-                setTimeout(function () {
-                    $('#konfirmasi-modal').modal('hide'); //sembunyikan konfirmasi modal
-                    var oTable = $('#table_pelanggan').dataTable();
-                    oTable.fnDraw(false); //reset datatable
-                });
-                iziToast.warning({ //tampilkan izitoast warning
-                    title: 'Data Berhasil Dihapus',
-                    message: '{{ Session('
-                    delete ')}}',
-                    position: 'bottomRight'
-                });
-            }
-        })
+            url: '{{ url("master/kelas") }}' + '/' + id,
+            type: 'GET',
+          })
+          .done(function(data) { // selesai dan berhasil
+            // jika data ditemukan
+            // Isi data ke form
+            $('#form-kelas-edit [name="kelas_id"]').val(data.id);
+            $('#form-kelas-edit [name="kelas_name"]').val(data.kelas_name);
+            $('#form-kelas-edit [name="kelas_description"]').val(data.kelas_description);
+  
+            M.updateTextFields(); // biar label nya nggak overlaping
+            // Tampilkan form
+            $(modal).modal('open')
+          })
+          .fail(function() {
+            console.log("error");
+          });
+      });
+  
+      $("#form-kelas-edit").validate({
+        submitHandler: function(form) {
+          var modal = '#modal-edit';
+          var id = $('#form-kelas-edit [name="kelas_id"]').val();
+          $.ajax({
+            url: '{{ url("master/kelas") }}' + '/' + id,
+            type: 'PUT',
+            data: $(form).serialize(),
+          })
+          .done(function() { // selesai dan berhasil
+            swal("Good job!", "You clicked the button!", "success") // alert success
+            $(form)[0].reset(); // reset form
+            tdatatable.ajax.reload(null, false); // reload datatable
+            $(modal).modal('close'); // tutup modal
+          })
+          .fail(function() {
+            console.log("error");
+          });
+  
+        }
+      });
     });
-</script>
+  </script>
 @endpush

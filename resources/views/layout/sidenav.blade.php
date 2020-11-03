@@ -38,7 +38,7 @@
             <li class=" nav-item"><a href="#"><i class="feather icon-credit-card"></i><span class="menu-title"
                         data-i18n="Starter kit">Billing</span></a>
                 <ul class="menu-content">
-                    <li class="{{ Request::is('acounts')?'active':''}}"><a href="{{ url ('acounts')}}"><i></i><span
+                    <li class="{{ Request::is('akun')?'active':''}}"><a href="{{ url ('akun')}}"><i></i><span
                                 class="menu-item" data-i18n="2 columns">Account</a>
                     </li>
                     <li class="{{ Request::is('transactions')?'active':''}}"><a

@@ -1,10 +1,9 @@
 <?php
 
-
-use App\Model\Pelanggan;
+use App\Model\Akun;
 use Illuminate\Database\Seeder;
 
-class pelangganSeeder extends Seeder
+class akunSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,7 +12,6 @@ class pelangganSeeder extends Seeder
      */
     public function run()
     {
-
-        factory(Pelanggan::class, 100)->create();
+        factory(Akun::class, 100)->create();
     }
 }
